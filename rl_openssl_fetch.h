@@ -13,7 +13,6 @@
 
 //"http://www.wikipedia.org/posts/42"
 //"www.youtube.com"
-//"www.wikipedia.org"
 //"https://common.rediptv.com:443" //"212.224.72.104:80"
 //"www.wikipedia.org"
 //#define HOST_NAME "https://www.wikipedia.org:443"
@@ -21,7 +20,7 @@
 //"80"
 
 
-#define HOST_RESOURCE "/ "
+#define HOST_RESOURCE "/index.html "
 //"/index.html "
 //"/ "
 //"/cgi-bin/randbyte?nbytes=32&format=h"
