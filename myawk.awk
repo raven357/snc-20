@@ -21,7 +21,7 @@ else {
    } 
 } 
 
-#has a commit
+#has a committed
 
 #BEGIN{x=0; flag = 1}
 
