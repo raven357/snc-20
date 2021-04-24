@@ -42,9 +42,9 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}	
 	
-	bzero((char *)&srv_addr, sizeof(srv_addr));
+	memset((char *)&srv_addr, '\0', sizeof(srv_addr));
 	srv_addr.sin_family = AF_INET;
-	bcopy((char *)server->h_addr, (char *)&srv_addr.sin_addr.s_addr, server->h_length);
+	memmove((char *)server->h_addr, (char *)&srv_addr.sin_addr.s_addr, server->h_length);
 	srv_addr.sin_port =	htons(portno);
 
 	addr_len = sizeof(srv_addr);
@@ -57,8 +57,7 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}		
 		
-		//memset((void *)buf, '\0', sizeof(buf));
-		bzero(buf, sizeof(buf));
+		memset((void *)buf, '\0', sizeof(buf));
 		if((numbyt = recvfrom(sockfd, buf, BUF_MAXSIZE, 0, (struct sockaddr *)&srv_addr, &addr_len)) < 0){
 			perror("ERROR: recvfrom()\n");
 			close(sockfd);
