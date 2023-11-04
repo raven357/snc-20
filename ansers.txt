@@ -1,0 +1,180 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#1 SQL:
+Describe the difference between “LEFT JOIN” and “INNER JOIN”
+
+LEFT JOIN and INNER JOIN are two types of SQL JOIN clauses that are used to combine data from two or more tables.
+INNER JOIN returns all rows from both tables where there is a match in the join condition. For example, the following INNER JOIN will return all customers and their orders.
+LEFT JOIN returns all rows from the left table, even if there are no matches in the right table. For example, the following LEFT JOIN will return all customers, even if they do not have any orders.
+
+Which of both “can” result in a larger result set, if the rest of the query is identical and why?
+
+LEFT JOIN can result in a larger result set than INNER JOIN, if the rest of the query is identical. This is because LEFT JOIN returns all rows from the left table, even if there are no matches in the right table. INNER JOIN only returns rows where there is a match in the join condition.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+#2 SQL:
+
+SELECT tid, customerdata.name, 'VISA' AS visa_card_name, customercards.contractnumber AS visa_contract_number,
+  'MASTER' AS mastercard_card_name, customercards.contractnumber AS mastercard_contract_number
+FROM customerdata
+INNER JOIN customercards ON customerdata.id = customercards.customerdata_id
+WHERE customercards.card_id = 3
+UNION
+SELECT tid, customerdata.name, 'VISA' AS visa_card_name, NULL AS visa_contract_number,
+  'MASTER' AS mastercard_card_name, customercards.contractnumber AS mastercard_contract_number
+FROM customerdata
+INNER JOIN customercards ON customerdata.id = customercards.customerdata_id
+WHERE customercards.card_id = 1
+ORDER BY tid;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+#3 SQL:
+
+SELECT tid, COUNT(card_id) AS num_card_contracts
+FROM customerdata
+INNER JOIN customercards ON customerdata.id = customercards.customerdata_id
+GROUP BY tid
+ORDER BY num_card_contracts DESC;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+#4 C++:
+
+What is the purpose of ‘delete’ operator?
+
+delete operator is used to free dynamically allocated memory (deallocation memory on the heap) that was allocated anywhere in program with new operato in C++.
+int* ptr = new int;// allocate
+delete ptr; // deallocate
+And also using delete oprator arr is different 
+int* array = new int[10];
+delete[] arrayy; // deallocates the array
+
+In addition to deallocating memory, the delete operator can be used to call the destructor of the object explicitly and then deallocate the memory.
+
+Which members of the base class are visible in a derived class?
+
+There are types of inheretance of C++, public, protected and private.
+When derived class inhrets publicly(public keyword), public members of base class will be visible in derived class as public, protected memmbers as protected, but private members of the base class remain inaccessible to the derived class.
+
+When derived class inhrets protected(protect keyword), public and protected members of base class will be visible as protected in derived class.
+When derived class inhrets privately(private keyword), all members of base class will be inaccessible in drived class.
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#6 C++:
+
+#include <iostream>
+#include <cassert>
+
+unsigned int convert_int_to_bcd(unsigned char* destination_buffer, unsigned int bufferlength, unsigned int value) {
+    unsigned int temp = value;
+    unsigned int len = 0;
+    while (temp > 0) {
+        temp /= 10;
+        len++;
+    }
+
+    assert(len <= bufferlength && "Buffer too small for convertion");
+    //fill the buffer with the BCD
+    for (int i = bufferlength - 1; i >= 0; i--) {
+        if (value == 0) {
+            destination_buffer[i] = 0;
+        } else {
+            destination_buffer[i] = value % 10;
+            value /= 10;
+            destination_buffer[i] |= (value % 10) << 4;
+            value /= 10;
+        }
+    }
+
+    return len;
+}
+
+int main() {
+    const int BUFFER_LENGTH = 4;
+    unsigned char destination_buffer[BUFFER_LENGTH] = {0};
+    unsigned int value = 9873432;;
+
+    unsigned int result = convert_int_to_bcd(destination_buffer, BUFFER_LENGTH, value);
+    std::cout << result << " (HEXDUMP): ";
+    for (int i = 0; i < result; i++) {
+        std::cout << std::hex << (int)destination_buffer[i];
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+#6 C++:
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+void desescending_order_array(int* arr, int num) {
+    std::vector<int> vec(arr, arr + num);
+
+    std::sort(vec.begin(), vec.end(), std::greater<int>());
+
+    for (int i = 0; i < num; i++) {
+        arr[i] = vec[i];
+    }
+}
+
+int main() {
+    int a[5] = {5, -3, 1, 9, 2};
+    int numElements = 5;
+
+    desescending_order_array(a, numElements);
+
+    std::cout << "After sorted array in descending order: ";
+    for (int i = 0; i < numElements; i++) {
+        std::cout << a[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+#7 C++:
+
+#include <iostream>
+#include <windows.h>
+
+int print_directory_path(const std::wstring& directoryPath) {
+    WIN32_FIND_DATAW findFileData;
+    HANDLE hFind;
+    std::wstring searchPath = directoryPath + L"\\*";
+    int lineCount = 0;
+
+    hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE) {
+        std::wcout << L"Invalid directory path." << std::endl;
+        return 0;
+    }
+
+    do {
+        if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            if (wcscmp(findFileData.cFileName, L".") != 0 && wcscmp(findFileData.cFileName, L"..") != 0) {
+                std::wcout << L"Line " << ++lineCount << L": " << findFileData.cFileName << std::endl;
+                std::wstring newPath = directoryPath + L"\\" + findFileData.cFileName;
+                lineCount +=print_directory_path(newPath);
+            }
+        } else {
+            std::wcout << L"Line " << ++lineCount << L": " << findFileData.cFileName << std::endl;
+        }
+    } while (FindNextFileW(hFind, &findFileData) != 0);
+
+    FindClose(hFind);
+    return lineCount;
+}
+
+int main() {
+    std::wstring startingPath = L"C:\\windows\\debug";
+    std::wcout << L"Starting path: \"" << startingPath << L"\"" << std::endl;
+    int totalLines =print_directory_path(startingPath);
+    std::wcout << L"Result (total lines = " << totalLines << L"):" << std::endl;
+
+    return 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
